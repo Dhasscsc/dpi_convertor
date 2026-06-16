@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="ta">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dhass Public Service Center - Photo & Sign Tools</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        body {
+            background-color: #f4f7f6;
+            margin: 0;
+            padding: 20px;
+            color: #333;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: #ffffff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        h2 {
+            text-align: center;
+            color: #1a5f7a;
+            margin-bottom: 25px;
+            border-bottom: 2px solid #1a5f7a;
+            padding-bottom: 10px;
+        }
+        .input-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #444;
+        }
+        input[type="file"], input[type="text"] {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 6px;
+            font-size: 14px;
+            transition: border-color 0.3s;
+        }
+        input[type="text"]:focus {
+            border-color: #1a5f7a;
+            outline: none;
+        }
+        .main-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        @media (max-width: 768px) {
+            .main-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        .section-title {
+            text-align: center;
+            background-color: #eef5f7;
+            padding: 10px;
+            border-radius: 6px;
+            color: #1a5f7a;
+            margin-bottom: 15px;
+            font-size: 16px;
+        }
+        .tool-card {
+            background: #fafafa;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        .tool-card h3 {
+            margin-top: 0;
+            color: #2c3e50;
+            font-size: 16px;
+        }
+        .info-txt {
+            font-size: 12px;
+            color: #7f8c8d;
+            margin-bottom: 12px;
+        }
+        .btn {
+            background-color: #1a5f7a;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            font-size: 13px;
+            font-weight: bold;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.2s;
+            width: 100%;
+        }
+        .btn:hover {
+            background-color: #124559;
+        }
+        .btn:disabled {
+            background-color: #bdc3c7;
+            cursor: not-allowed;
+        }
+        canvas {
+            display: none;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            font-size: 12px;
+            color: #95a5a6;
+        }
+        .update-note {
+            background: #e8f4f8;
+            border-left: 4px solid #1a5f7a;
+            padding: 10px 15px;
+            margin-bottom: 20px;
+            font-size: 13px;
+            color: #1a5f7a;
+            border-radius: 4px;
+        }
+        .color-indicator {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+            vertical-align: middle;
+            margin-right: 5px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Dhass Public Service Center - போட்டோ & கையெழுத்து கன்வெர்ட்டர்</h2>
+    
+    <div class="update-note">
+        <strong>✅ புதிய அப்டேட்:</strong> 
+        UTI கையெழுத்து DPI 300-க்கு மாற்றப்பட்டது
+    </div>
+
+    <div class="input-group">
+        <label for="fileNameInput">சேவ் செய்ய வேண்டிய கோப்பின் பெயர் (விருப்பமிருந்தால் மட்டும்):</label>
+        <input type="text" id="fileNameInput" placeholder="உதாரணம்: siva (பெயர் இல்லையெனில் பழைய பெயரில் சேவ் ஆகும்)">
+    </div>
+
+    <div class="main-grid">
+        
+        <div>
+            <div class="section-title">📷 1. புகைப்பட மாற்றி (Photo Converter)</div>
+            <div class="input-group">
+                <label for="imageLoader">புகைப்படத்தை தேர்ந்தெடுக்கவும்:</label>
+                <input type="file" id="imageLoader" accept="image/*">
+            </div>
+
+            <div class="tool-card">
+                <h3>1. இ-சேவை (e-Sevai) Photo</h3>
+                <div class="info-txt">250 x 250 px | 300 DPI</div>
+                <button class="btn" id="btnEsevai" onclick="convertMedia('photo', 'esevai', 250, 250)" disabled>Download e-Sevai Photo</button>
+            </div>
+
+            <div class="tool-card">
+                <h3>2. UTI PAN Card Photo</h3>
+                <div class="info-txt">213 x 213 px | 300 DPI</div>
+                <button class="btn" id="btnUti" onclick="convertMedia('photo', 'uti', 213, 213)" disabled>Download UTI Photo</button>
+            </div>
+
+            <div class="tool-card">
+                <h3>3. NSDL PAN Card Photo</h3>
+                <div class="info-txt">197 x 276 px | 200 DPI</div>
+                <button class="btn" id="btnNsdl" onclick="convertMedia('photo', 'nsdl', 276, 197)" disabled>Download NSDL Photo</button>
+            </div>
+        </div>
+
+        <div>
+            <div class="section-title">✍️ 2. கையெழுத்து மாற்றி</div>
+            <div class="input-group">
+                <label for="signLoader">கையெழுத்தை தேர்ந்தெடுக்கவும்:</label>
+                <input type="file" id="signLoader" accept="image/*">
+            </div>
+
+            <div class="tool-card">
+                <h3>1. இ-சேவை (e-Sevai) Sign</h3>
+                <div class="info-txt">பதிவேற்றும் சைஸ் | 300 DPI | <span class="color-indicator" style="background:#0000ff;"></span> நீல மை</div>
+                <button class="btn" id="btnEsevaiSign" onclick="convertMedia('sign', 'esevai_sign', null, null, 'blue')" disabled>Download e-Sevai Sign</button>
+            </div>
+
+            <div class="tool-card">
+                <h3>2. UTI PAN Card Sign</h3>
+                <div class="info-txt">400 x 200 px | 300 DPI | <span class="color-indicator" style="background:#000000;"></span> கருப்பு மை</div>
+                <button class="btn" id="btnUtiSign" onclick="convertMedia('sign', 'uti_sign', 200, 400, 'black')" disabled>Download UTI Sign</button>
+            </div>
+
+            <div class="tool-card">
+                <h3>3. NSDL PAN Card Sign</h3>
+                <div class="info-txt">354 x 154 px | 200 DPI | <span class="color-indicator" style="background:#000000;"></span> கருப்பு மை</div>
+                <button class="btn" id="btnNsdlSign" onclick="convertMedia('sign', 'nsdl_sign', 154, 354, 'black')" disabled>Download NSDL Sign</button>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="footer">
+        &copy; 2026 Dhass Public Service Center. All Rights Reserved.
+    </div>
+</div>
+
+<canvas id="canvas"></canvas>
+
+<script>
+    const imageLoader = document.getElementById('imageLoader');
+    const signLoader = document.getElementById('signLoader');
+    const fileNameInput = document.getElementById('fileNameInput');
+    
+    // போட்டோ பட்டன்கள்
+    const btnEsevai = document.getElementById('btnEsevai');
+    const btnUti = document.getElementById('btnUti');
+    const btnNsdl = document.getElementById('btnNsdl');
+    
+    // சிக்னேச்சர் பட்டன்கள்
+    const btnEsevaiSign = document.getElementById('btnEsevaiSign');
+    const btnUtiSign = document.getElementById('btnUtiSign');
+    const btnNsdlSign = document.getElementById('btnNsdlSign');
+    
+    let originalImg = new Image();
+    let originalSign = new Image();
+    
+    let photoName = "photo";
+    let signName = "sign";
+
+    // போட்டோ அப்லோடு நிகழ்வு
+    imageLoader.addEventListener('change', function(e) {
+        if (e.target.files.length === 0) return;
+        const file = e.target.files[0];
+        photoName = file.name.substring(0, file.name.lastIndexOf('.')) || file.name;
+        
+        const reader = new FileReader();
+        reader.onload = function(event) {
+            originalImg.onload = function() {
+                btnEsevai.disabled = false;
+                btnUti.disabled = false;
+                btnNsdl.disabled = false;
+            }
+            originalImg.src = event.target.result;
+        }
+        reader.readAsDataURL(file);
+    });
+
+    // கையெழுத்து அப்லோடு நிகழ்வு
+    signLoader.addEventListener('change', function(e) {
+        if (e.target.files.length === 0) return;
+        const file = e.target.files[0];
+        signName = file.name.substring(0, file.name.lastIndexOf('.')) || file.name;
+        
+        const reader = new FileReader();
+        reader.onload = function(event) {
+            originalSign.onload = function() {
+                btnEsevaiSign.disabled = false;
+                btnUtiSign.disabled = false;
+                btnNsdlSign.disabled = false;
+            }
+            originalSign.src = event.target.result;
+        }
+        reader.readAsDataURL(file);
+    });
+
+    // போட்டோ மற்றும் கையெழுத்தை ரீசைஸ் செய்யும் பொதுவான பங்க்ஷன்
+    function convertMedia(mediaType, suffix, targetHeight, targetWidth, inkColor) {
+        let activeImg = (mediaType === 'photo') ? originalImg : originalSign;
+        let defaultName = (mediaType === 'photo') ? photoName : signName;
+        
+        if (!activeImg.src) return;
+
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+
+        // இ-சேவை கையெழுத்து - பதிவேற்றும் அளவிலேயே (resize இல்லை)
+        if (mediaType === 'sign' && suffix === 'esevai_sign') {
+            canvas.width = activeImg.width;
+            canvas.height = activeImg.height;
+        } else {
+            canvas.width = targetWidth;
+            canvas.height = targetHeight;
+        }
+
+        // படத்தை கேன்வாஸில் வரைதல்
+        if (mediaType === 'sign' && suffix === 'esevai_sign') {
+            // இ-சேவை கையெழுத்து - original size-லேயே draw
+            ctx.drawImage(activeImg, 0, 0, activeImg.width, activeImg.height);
+        } else {
+            ctx.drawImage(activeImg, 0, 0, targetWidth, targetHeight);
+        }
+
+        // கையெழுத்து பகுதியாக இருந்தால் மட்டும் பிக்சல்களை பிராசஸ் செய்தல்
+        if (mediaType === 'sign') {
+            let imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+            let data = imgData.data;
+            
+            // 1. பிக்சல்களின் சராசரி வெளிச்சத்தை கணக்கிடுதல் (Adaptive Thresholding)
+            let totalBrightness = 0;
+            for (let i = 0; i < data.length; i += 4) {
+                totalBrightness += (data[i] + data[i+1] + data[i+2]) / 3;
+            }
+            let avgBrightness = totalBrightness / (data.length / 4);
+            
+            // Threshold கணக்கிடுதல்
+            let threshold = avgBrightness < 128 ? avgBrightness + 25 : 160;
+
+            // நிறம் அமைத்தல்
+            let inkR, inkG, inkB;
+            if (inkColor === 'blue') {
+                // நீல மை (0, 0, 255)
+                inkR = 0;
+                inkG = 0;
+                inkB = 255;
+            } else {
+                // கருப்பு மை (0, 0, 0)
+                inkR = 0;
+                inkG = 0;
+                inkB = 0;
+            }
+
+            // 2. பிக்சல்களை மாற்றுதல் - White Background + Ink Color
+            for (let i = 0; i < data.length; i += 4) {
+                let r = data[i];
+                let g = data[i+1];
+                let b = data[i+2];
+                
+                // கிரேஸ்கேல் மதிப்பு (Grayscale value)
+                let v = (0.2126 * r + 0.7152 * g + 0.0722 * b);
+                
+                if (v > threshold) {
+                    // பேக்ரவுண்டை முழு வெள்ளையாக்குதல் (White)
+                    data[i] = 255;     // R
+                    data[i+1] = 255;   // G
+                    data[i+2] = 255;   // B
+                } else {
+                    // கையெழுத்தை மையில் (Ink Color)
+                    data[i] = inkR;    // R
+                    data[i+1] = inkG;  // G
+                    data[i+2] = inkB;  // B
+                }
+            }
+            // மாற்றியமைத்த பிக்சல்களை மீண்டும் கேன்வாஸில் ஏற்றுதல்
+            ctx.putImageData(imgData, 0, 0);
+        }
+
+        // கோப்பு பெயர் லாஜிக்
+        let customName = fileNameInput.value.trim();
+        let finalFileName = "";
+
+        if (customName !== "") {
+            finalFileName = customName + "_" + suffix + ".jpg";
+        } else {
+            finalFileName = defaultName + "_" + suffix + ".jpg";
+        }
+
+        // தரமான JPEG ஆக மாற்றுதல்
+        const dataUrl = canvas.toDataURL('image/jpeg', 0.95);
+
+        // டவுன்லோடு செய்தல்
+        const downloadLink = document.createElement('a');
+        downloadLink.download = finalFileName;
+        downloadLink.href = dataUrl;
+        document.body.appendChild(downloadLink);
+        downloadLink.click();
+        document.body.removeChild(downloadLink);
+    }
+</script>
+
+</body>
+</html>
